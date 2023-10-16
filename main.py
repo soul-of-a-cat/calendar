@@ -11,14 +11,18 @@ bot = AsyncTeleBot(TOKEN)
 chats = []
 
 
-@bot.message_handler(commands=['start', 'calendar'])
+@bot.message_handler(commands=['start'])
 async def start(message):
-    from parse import text
-
     chat_id = message.chat.id
     if chat_id not in chats:
         chats.append(chat_id)
-    await bot.send_message(chat_id, text)
+    await bot.send_message(chat_id, 'Вы подписались на рассылку')
+
+
+@bot.message_handler(commands=['calendar'])
+async def start(message):
+    from parse import text
+    await bot.send_message(message.chat.id, text)
 
 
 @bot.message_handler(commands=['stop'])
@@ -27,6 +31,8 @@ async def stop(message):
     if chat_id in chats:
         del chats[chat_id]
         await bot.send_message(chat_id, 'Вы отписались от рассылки')
+    else:
+        await bot.send_message(chat_id, 'Вы уже отписаны')
 
 
 async def send():
