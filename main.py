@@ -3,6 +3,7 @@ import schedule
 from telebot.async_telebot import AsyncTeleBot
 from threading import Thread
 import asyncio
+from backgroung import keep_alive
 
 with open('bot.txt') as f:
     TOKEN = f.read()
@@ -20,7 +21,7 @@ async def start(message):
 
 
 @bot.message_handler(commands=['calendar'])
-async def start(message):
+async def calendar(message):
     from parse import text
     await bot.send_message(message.chat.id, text)
 
@@ -49,6 +50,7 @@ def run():
 
 
 if __name__ == '__main__':
+    keep_alive()
     schedule.every(1).day.at('00:01:10').do(send)
     Thread(target=run).start()
     asyncio.run(bot.polling(none_stop=True, interval=0))

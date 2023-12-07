@@ -1,10 +1,18 @@
 from bs4 import BeautifulSoup
 from selenium import webdriver
+from selenium.webdriver import FirefoxOptions
 import pymorphy2
 import requests
 import time
+import os
 
-driver = webdriver.Firefox()
+
+opts = FirefoxOptions()
+opts.add_argument("--no-sandbox")
+opts.add_argument("--headless")
+opts.add_argument("--disable-gpu")
+opts.add_argument("--window-size=1920,1080")
+driver = webdriver.Firefox(options=opts)
 morph = pymorphy2.MorphAnalyzer()
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0'}
 text = '''"Календарь"
@@ -20,9 +28,10 @@ while True:
         break
     except Exception:
         driver.quit()
-        driver = webdriver.Firefox()
+        driver = webdriver.Firefox(options=opts, executable_path=os.getcwd() + '/geckodriver')
 web_events = BeautifulSoup(driver.page_source, 'lxml')
 driver.quit()
+display.stop()
 
 url_weather_spb = 'https://www.gismeteo.ru/weather-sankt-peterburg-4079/?ysclid=lmhwisjcfq453695344'
 response2 = requests.get(url_weather_spb, headers=headers)
