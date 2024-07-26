@@ -3,10 +3,11 @@ import schedule
 from telebot.async_telebot import AsyncTeleBot
 from threading import Thread
 import asyncio
-from backgroung import keep_alive
+import os
+from dotenv import load_dotenv
 
-with open('bot.txt') as f:
-    TOKEN = f.read()
+load_dotenv()
+TOKEN = os.getenv('TOKEN')
 
 bot = AsyncTeleBot(TOKEN)
 chats = []
@@ -30,7 +31,7 @@ async def calendar(message):
 async def stop(message):
     chat_id = message.chat.id
     if chat_id in chats:
-        del chats[chat_id]
+        del chats[chats.index(chat_id)]
         await bot.send_message(chat_id, 'Вы отписались от рассылки')
     else:
         await bot.send_message(chat_id, 'Вы уже отписаны')
@@ -50,7 +51,6 @@ def run():
 
 
 if __name__ == '__main__':
-    keep_alive()
-    schedule.every(1).day.at('00:01:10').do(send)
+    schedule.every(1).day.at('00:00:10').do(send)
     Thread(target=run).start()
     asyncio.run(bot.polling(none_stop=True, interval=0))
