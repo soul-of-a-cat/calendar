@@ -3,21 +3,28 @@ import pymorphy2
 import requests
 
 morph = pymorphy2.MorphAnalyzer()
-headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0'}
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0',
+}
+data = {
+    'f026eed117': '36877',
+    'name': '',
+}
+session = requests.session()
 text = '''"Календарь"
 Сегодня '''
 
 url_events = 'https://kakoysegodnyaprazdnik.ru/'
-response1 = requests.get(url_events, headers=headers)
+response1 = session.post(url_events, headers=headers, data=data)
 response1.encoding = 'utf-8'
 web_events = BeautifulSoup(response1.text, 'lxml')
 
 url_weather_spb = 'https://www.gismeteo.ru/weather-sankt-peterburg-4079/?ysclid=lmhwisjcfq453695344'
-response2 = requests.get(url_weather_spb, headers=headers)
+response2 = session.get(url_weather_spb, headers=headers)
 web_weather_spb = BeautifulSoup(response2.text, 'lxml')
 
 url_weather_syzran = 'https://www.gismeteo.ru/weather-syzran-4448/'
-response3 = requests.get(url_weather_syzran, headers=headers)
+response3 = session.get(url_weather_syzran, headers=headers)
 web_weather_syzran = BeautifulSoup(response3.text, 'lxml')
 
 today = web_events.find('h2', attrs={'class': 'mainpage'})
